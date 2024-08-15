@@ -10,7 +10,7 @@ const app = express()
 
 /***socket connection */
 const server = http.createServer(app)
-const allowedOrigins = ['https://chatify-br78.vercel.app'];
+const allowedOrigins = [`${process.env.FRONTEND_URL}`];
 const io = new Server(server, {
     cors: {
         origin: function (origin, callback) {
