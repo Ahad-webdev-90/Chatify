@@ -56,40 +56,40 @@ const EditUserDetails = ({ onClose, user }) => {
         })
     }
 
-   
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         try {
-            const URL = `${process.env.REACT_APP_BACKEND_URL}/api/update-user`;
-    
+            const URL = 'https://chatify-two-drab.vercel.app/api/update-user';
+
             // Filter out necessary fields from data object
             const filteredData = {
                 name: data.name,
                 profile_pic: data.profile_pic,
                 // Add any other properties that are required by your API
             };
-    
+
             const response = await axios({
                 method: 'post',
                 url: URL,
                 data: filteredData,
                 withCredentials: true
             });
-    
+
             taost.success(response?.data?.message);
-    
+
             if (response.data.success) {
                 dispatch(setUser(response.data.data));
                 onClose();
             }
-    
+
         } catch (error) {
             taost.error();
         }
     }
-    
+
     return (
         <div className='fixed top-0 bottom-0 left-0 right-0 bg-gray-700 bg-opacity-40 flex justify-center items-center z-10'>
             <div className='bg-white p-4 py-6 m-1 rounded w-full max-w-sm'>
