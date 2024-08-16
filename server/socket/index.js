@@ -6,27 +6,46 @@ const UserModel = require('../models/UserModel');
 const { ConversationModel, MessageModel } = require('../models/ConversationModel');
 const getConversation = require('../helpers/getConversation');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 
 // Set up CORS
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const allowedOrigin = isDevelopment ? '*' : new URL(process.env.FRONTEND_URL).origin;
+const allowedOrigins = [
+  'https://chatify-ahkg-jjlvh12v5-ahad-webdev-90s-projects.vercel.app',
+  'https://chatify-ahkg.vercel.app'
+];
 
 app.use(cors({
-  origin: allowedOrigin,
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 
-/*** Socket connection */
+// Serve manifest.json without authentication
+app.use('/manifest.json', express.static(path.join(__dirname, 'path/to/manifest.json')));
+
+// Socket connection
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigin,
+    origin: function(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ["GET", "POST"],
     credentials: true,
   },
-  transports: ['websocket', 'polling'], // Ensure both websocket and polling are enabled
+  transports: ['websocket', 'polling'],
 });
 
 // Online user tracking
