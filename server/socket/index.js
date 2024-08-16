@@ -11,7 +11,7 @@ const app = express();
 
 // Set up CORS
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const allowedOrigin = isDevelopment ? '*' : process.env.FRONTEND_URL;
+const allowedOrigin = isDevelopment ? '*' : new URL(process.env.FRONTEND_URL).origin;
 
 app.use(cors({
   origin: allowedOrigin,
