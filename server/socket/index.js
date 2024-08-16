@@ -11,7 +11,7 @@ const app = express();
 
 // Set up CORS
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const allowedOrigin = isDevelopment ? '*' : process.env.FRONTEND_URL;
+const allowedOrigin = isDevelopment ? '*' : 'https://chatify-ahkg.vercel.app/';
 
 app.use(cors({
   origin: allowedOrigin,
