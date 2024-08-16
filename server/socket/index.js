@@ -14,7 +14,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 const allowedOrigin = isDevelopment ? '*' : process.env.FRONTEND_URL;
 
 app.use(cors({
-  origin: true,
+  origin: allowedOrigin,
   credentials: true,
 }));
 
@@ -22,9 +22,11 @@ app.use(cors({
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: true,
+    origin: allowedOrigin,
+    methods: ["GET", "POST"],
     credentials: true,
   },
+  transports: ['websocket', 'polling'], // Ensure both websocket and polling are enabled
 });
 
 // Online user
