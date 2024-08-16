@@ -14,7 +14,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 const allowedOrigin = isDevelopment ? '*' : process.env.FRONTEND_URL;
 
 app.use(cors({
-  origin: allowedOrigin,
+  origin: true,
   credentials: true,
 }));
 
@@ -22,7 +22,7 @@ app.use(cors({
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigin,
+    origin: true,
     credentials: true,
   },
 });
