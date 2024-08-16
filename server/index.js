@@ -8,7 +8,7 @@ const { app, server } = require('./socket/index')
 
 // const app = express()
 app.use(cors({
-    origin: 'https://chatify-ahkg.vercel.app/',
+    origin: true,
     credentials: true
 }))
 app.use(express.json())
