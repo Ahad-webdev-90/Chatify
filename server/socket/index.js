@@ -202,7 +202,7 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
-        origin: "https://your-allowed-origin.com", // Update this to your allowed origin
+        origin: "https://chatify-ahkg.vercel.app/", // Update this to your allowed origin
         methods: ["GET", "POST"],
         credentials: true
     }
