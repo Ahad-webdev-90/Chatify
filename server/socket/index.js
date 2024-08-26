@@ -202,12 +202,12 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://chatify-ahkg.vercel.app", "https://chatify-two-drab.vercel.app"], // Added multiple origins
+        origin: ["https://chatify-ahkg.vercel.app", "https://chatify-two-drab.vercel.app"],
         methods: ["GET", "POST"],
-        allowedHeaders: ["Authorization"],
+        allowedHeaders: ["Authorization", "Content-Type"], // Ensure Content-Type allowed in CORS headers
         credentials: true
     },
-    transports: ['websocket', 'polling'] // Enable both websocket and polling transports, prioritizing websocket
+    transports: ['websocket', 'polling'] // Enable both websocket and polling transports
 });
 
 // Track online users
@@ -216,14 +216,18 @@ const onlineUser = new Set();
 io.on('connection', async (socket) => {
     console.log("User connected:", socket.id);
 
-    const token = socket.handshake.auth?.token; // Safe access to token
+    const token = socket.handshake.auth?.token;
+    if (!token) {
+        console.error('No token provided');
+        return socket.disconnect(); // Properly disconnect if no token provided
+    }
 
     try {
         // Authenticate user
         const user = await getUserDetailsFromToken(token);
         if (!user) {
-            socket.disconnect(); // Disconnect if user is not authenticated
-            return;
+            console.error('Authentication failed');
+            return socket.disconnect(); // Properly disconnect if authentication fails
         }
 
         // Join room and add to online users
@@ -240,7 +244,7 @@ io.on('connection', async (socket) => {
                     _id: userDetails?._id,
                     name: userDetails?.name,
                     email: userDetails?.email,
-                    profile_pic: userDetails?.profile_pic?.replace('http://', 'https://'), // Ensure HTTPS for profile pic
+                    profile_pic: userDetails?.profile_pic?.replace('http://', 'https://'),
                     online: onlineUser.has(userId)
                 };
                 socket.emit('message-user', payload);
@@ -279,7 +283,7 @@ io.on('connection', async (socket) => {
 
                 const message = new MessageModel({
                     text: data.text,
-                    imageUrl: data.imageUrl?.replace('http://', 'https://'), // Ensure HTTPS for images
+                    imageUrl: data.imageUrl?.replace('http://', 'https://'),
                     videoUrl: data.videoUrl,
                     msgByUserId: data.msgByUserId,
                 });
