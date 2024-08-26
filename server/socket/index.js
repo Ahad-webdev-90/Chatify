@@ -190,7 +190,7 @@
 
 const express = require('express')
 const { Server } = require('socket.io')
-const http  = require('http')
+const http = require('http')
 const getUserDetailsFromToken = require('../helpers/getUserDetailsFromToken')
 const UserModel = require('../models/UserModel')
 const { ConversationModel, MessageModel } = require('../models/ConversationModel')
@@ -202,7 +202,7 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
-        origin: "https://chatify-ahkg.vercel.app/", // Update this to your allowed origin
+        origin: "https://chatify-ahkg.vercel.app", // Trailing slash removed
         methods: ["GET", "POST"],
         credentials: true
     }
