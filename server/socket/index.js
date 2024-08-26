@@ -202,12 +202,12 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://chatify-ahkg.vercel.app", // Ensure this matches your deployment
+        origin: ["https://chatify-ahkg.vercel.app", "https://chatify-two-drab.vercel.app"], // Added multiple origins
         methods: ["GET", "POST"],
         allowedHeaders: ["Authorization"],
         credentials: true
     },
-    transports: ['websocket', 'polling'] // Enable both websocket and polling transports
+    transports: ['websocket', 'polling'] // Enable both websocket and polling transports, prioritizing websocket
 });
 
 // Track online users
@@ -216,7 +216,7 @@ const onlineUser = new Set();
 io.on('connection', async (socket) => {
     console.log("User connected:", socket.id);
 
-    const token = socket.handshake.auth.token;
+    const token = socket.handshake.auth?.token; // Safe access to token
 
     try {
         // Authenticate user
@@ -356,6 +356,7 @@ io.on('connection', async (socket) => {
     // Handle disconnection
     socket.on('disconnect', () => {
         onlineUser.delete(user._id.toString());
+        io.emit('onlineUser', Array.from(onlineUser)); // Inform others of user disconnection
         console.log('User disconnected:', socket.id);
     });
 });
@@ -364,3 +365,4 @@ module.exports = {
     app,
     server
 };
+
