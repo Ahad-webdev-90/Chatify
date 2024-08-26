@@ -202,11 +202,12 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "*", // Allow all origins for now (you can restrict this to specific domains later)
+        origin: "https://chatify-ahkg.vercel.app", // Ensure this matches your deployment
         methods: ["GET", "POST"],
         allowedHeaders: ["Authorization"],
         credentials: true
-    }
+    },
+    transports: ['websocket', 'polling'] // Enable both websocket and polling transports
 });
 
 // Track online users
@@ -239,7 +240,7 @@ io.on('connection', async (socket) => {
                     _id: userDetails?._id,
                     name: userDetails?.name,
                     email: userDetails?.email,
-                    profile_pic: userDetails?.profile_pic.replace('http://', 'https://'), // Fix mixed content issue
+                    profile_pic: userDetails?.profile_pic?.replace('http://', 'https://'), // Ensure HTTPS for profile pic
                     online: onlineUser.has(userId)
                 };
                 socket.emit('message-user', payload);
@@ -278,7 +279,7 @@ io.on('connection', async (socket) => {
 
                 const message = new MessageModel({
                     text: data.text,
-                    imageUrl: data.imageUrl?.replace('http://', 'https://'), // Fix mixed content issue for images
+                    imageUrl: data.imageUrl?.replace('http://', 'https://'), // Ensure HTTPS for images
                     videoUrl: data.videoUrl,
                     msgByUserId: data.msgByUserId,
                 });
@@ -363,5 +364,3 @@ module.exports = {
     app,
     server
 };
-
-
